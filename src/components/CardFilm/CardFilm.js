@@ -5,7 +5,7 @@ import { format } from 'date-fns';
 
 export default function Card({ e }) {
   let arr = [];
-  useEffect(() => {
+  function stars() {
     const container = document.getElementById(`${e.id}`);
     for (let i = 1; i <= Math.floor(e.vote_average); i++) {
       arr.push(i);
@@ -33,6 +33,9 @@ export default function Card({ e }) {
         }
       }
     }
+  }
+  useEffect(() => {
+    stars();
   });
   function descriptionAbbreviation() {
     let arrString = e.overview.split(' ');
