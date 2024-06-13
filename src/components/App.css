@@ -1,3 +1,54 @@
-/* .main {
-  background-color: #FAFAFA;
-} */
+.films-list {
+  background-color: #FFFFFF;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 0;
+  border: 1px solid transparent;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+.ant-pagination-item-active {
+  background: #1677ff !important;
+}
+.ant-pagination {
+  padding-left: 20%;
+  padding-right: 20%;
+  margin: auto;
+}
+@media (max-width: 769px) {
+  .films-list {
+    flex-direction: column;
+    width: 100%;
+    padding: 10px 20px;
+  }
+  .ant-pagination {
+    display: none;
+  }
+}
+@media (min-width: 769px) {
+  .films-list {
+    flex-direction: row;
+    padding: 20px 35px;  
+    width: 70%;
+  }
+  
+ :where(.css-dev-only-do-not-override-3rel02).ant-pagination 
+ .ant-pagination-item-active a {
+  color: white;
+ }
+}
+:where(.css-dev-only-do-not-override-46krfd) 
+.ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
+  color: #1677ff !important;
+}
+.input__search {
+  margin-bottom: 20px;
+}
+:where(.css-dev-only-do-not-override-3rel02).ant-alert-info {
+  width: 100%;
+  text-align: center;
+}
+.tabs {
+  margin: auto;
+}

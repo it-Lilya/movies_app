@@ -50,7 +50,9 @@ export default function Card({ e }) {
       <img className="container__poster" src={`https://image.tmdb.org/t/p/w500${e.poster_path}`}></img>
       <div className="container__info">
         <h3>{e.original_title}</h3>
-        <div className="container__data">{format(new Date(e.release_date), 'MMMM d, yyyy')}</div>
+        {e.release_date ? (
+          <div className="container__data">{format(new Date(e.release_date), 'MMMM d, yyyy')}</div>
+        ) : null}
         <div className="container__genres">
           <Button type="default">Action</Button>
           <Button type="default">Drama</Button>
