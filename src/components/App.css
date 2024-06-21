@@ -44,6 +44,9 @@
  .ant-pagination-item-active a {
   color: white !important;
  }
+ :where(.css-3rel02).ant-pagination .ant-pagination-item-active a {
+  color: white !important;
+ }
 }
 :where(.css-dev-only-do-not-override-46krfd) 
 .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
