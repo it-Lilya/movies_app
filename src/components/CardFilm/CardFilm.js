@@ -1,42 +1,69 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import './CardFilm.css';
 import { Button } from 'antd';
 import { format } from 'date-fns';
 
-export default function Card({ e }) {
+import Rate from './Rate/Rate';
+
+export default function Card({ e, guestId, apiKey, currentGenres }) {
+  const [classes, setClasses] = useState('');
+  const [r, sR] = useState(e.vote_average);
+  const genresArr = e.genre_ids;
+  let array = [];
+  genresArr.forEach((t) => {
+    array.push(currentGenres.find((el) => el.id === t));
+  });
+  useEffect(() => {
+    if (e.rating) {
+      sR(e.rating);
+    } else {
+      sR(e.vote_average.toFixed(1));
+    }
+    stars(r);
+  }, []);
   let arr = [];
-  function stars() {
+  function stars(r) {
     const container = document.getElementById(`${e.id}`);
-    for (let i = 1; i <= Math.floor(e.vote_average); i++) {
+    container.querySelectorAll('.rating__item').forEach((el) => {
+      el.classList.remove('star');
+    });
+    container.querySelector(`.item__${Math.floor(r).toFixed()}`).classList.add('star');
+    for (let i = 1; i <= Math.floor(r); i++) {
       arr.push(i);
       container.querySelector(`.item__${i}`).classList.add('star');
-      if (e.vote_average - arr[arr.length - 1] < 1 && e.vote_average - arr[arr.length - 1] !== 0) {
+      if (r - arr[arr.length - 1] < 1 && r - arr[arr.length - 1] !== 0) {
         let currentItem = container.querySelector(`.item__${i + 1}`);
-        if (e.vote_average - arr[arr.length - 1] <= 0.19) {
+        if (r >= 0 && (r % 1).toFixed(1) < 0.2) {
           currentItem.classList.add('star__one');
-        } else if (e.vote_average - arr[arr.length - 1] <= 0.29) {
+        } else if ((r % 1).toFixed(1) >= 0.2 && (r % 1).toFixed(1) < 0.3) {
           currentItem.classList.add('star__two');
-        } else if (e.vote_average - arr[arr.length - 1] <= 0.39) {
+        } else if ((r % 1).toFixed(1) >= 0.3 && (r % 1).toFixed(1) < 0.4) {
           currentItem.classList.add('star__three');
-        } else if (e.vote_average - arr[arr.length - 1] <= 0.49) {
+        } else if ((r % 1).toFixed(1) >= 0.4 && (r % 1).toFixed(1) < 0.5) {
           currentItem.classList.add('star__fourth');
-        } else if (e.vote_average - arr[arr.length - 1] <= 0.59) {
+        } else if ((r % 1).toFixed(1) >= 0.5 && (r % 1).toFixed(1) < 0.6) {
           currentItem.classList.add('star__fifth');
-        } else if (e.vote_average - arr[arr.length - 1] <= 0.69) {
+        } else if ((r % 1).toFixed(1) >= 0.6 && (r % 1).toFixed(1) < 0.7) {
           currentItem.classList.add('star__sixth');
-        } else if (e.vote_average - arr[arr.length - 1] <= 0.79) {
+        } else if ((r % 1).toFixed(1) >= 0.7 && (r % 1).toFixed(1) < 0.8) {
           currentItem.classList.add('star__seventh');
-        } else if (e.vote_average - arr[arr.length - 1] <= 0.89) {
+        } else if ((r % 1).toFixed(1) >= 0.8 && (r % 1).toFixed(1) < 1) {
           currentItem.classList.add('star__eighth');
-        } else if (e.vote_average - arr[arr.length - 1] <= 0.99) {
-          currentItem.classList.add('star__ninth');
+        } else if ((r % 1).toFixed(1) >= 1) {
+          currentItem.classList.add('star__one');
         }
+      }
+      if (Math.floor(r).toFixed() > 0 && Math.floor(r).toFixed() < 3) {
+        setClasses('third_raiting');
+      } else if (Math.floor(r).toFixed() >= 3 && Math.floor(r).toFixed() < 5) {
+        setClasses('five_raiting');
+      } else if (Math.floor(r).toFixed() >= 5 && Math.floor(r).toFixed() < 7) {
+        setClasses('seven_raiting');
+      } else {
+        setClasses('above_five_raiting');
       }
     }
   }
-  useEffect(() => {
-    stars();
-  });
   function descriptionAbbreviation() {
     let arrString = e.overview.split(' ');
     arrString.length = 29;
@@ -54,24 +81,18 @@ export default function Card({ e }) {
           <div className="container__data">{format(new Date(e.release_date), 'MMMM d, yyyy')}</div>
         ) : null}
         <div className="container__genres">
-          <Button type="default">Action</Button>
-          <Button type="default">Drama</Button>
+          {array.map((o) => {
+            return (
+              <Button type="default" key={o.id + Math.random()}>
+                {o.name}
+              </Button>
+            );
+          })}
         </div>
         <p className="container__description">{descriptionAbbreviation()}</p>
-        <div className="rating__items">
-          <div className="rating__item item__1"></div>
-          <div className="rating__item item__2"></div>
-          <div className="rating__item item__3"></div>
-          <div className="rating__item item__4"></div>
-          <div className="rating__item item__5"></div>
-          <div className="rating__item item__6"></div>
-          <div className="rating__item item__7"></div>
-          <div className="rating__item item__8"></div>
-          <div className="rating__item item__9"></div>
-          <div className="rating__item item__10"></div>
-        </div>
-        <div className="rating__circle">
-          <p className="rating__value">{e.vote_average.toFixed(1)}</p>
+        <Rate guestId={guestId} apiKey={apiKey} />
+        <div className={`rating__circle ${classes}`}>
+          <p className="rating__value">{r}</p>
         </div>
       </div>
     </div>

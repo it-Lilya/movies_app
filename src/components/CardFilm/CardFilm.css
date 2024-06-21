@@ -1,11 +1,12 @@
 .ant-btn-default {
-  width: 46px !important;
+  min-width: 46px;
+  max-width: 100px;
   height: 20px !important;
   font-size: 12px;
   margin-right: 7px;
 }
 .ant-btn-default:hover {
-  box-shadow: 0px 3px 5px -1px rgba(124, 123, 123, 0.83) !important;
+  box-shadow: 0px 3px 5px -1px rgba(210, 204, 204, 0.83) !important;
   color: #827E7E !important;
 }
 .rating__items {
@@ -14,8 +15,8 @@
 .rating__item {
   display: inline-block;
   vertical-align: top;
-  width: 15px;
-  height: 15px;
+  width: 17px;
+  height: 17px;
   position: relative;
 }
 .rating__item:before {
@@ -25,47 +26,49 @@
   left: 1px;
   bottom: 1px;
   right: 1px;
-  background: linear-gradient(to bottom, rgba(221, 220, 219, 1) 0%, rgba(209, 208, 206, 1) 100%);
+  /* background: linear-gradient(to bottom, rgba(221, 220, 219, 1) 0%, rgba(209, 208, 206, 1) 100%); */
   z-index: 1;
 }
-.rating__item,
 .rating__item:before {
-  background: linear-gradient(to bottom, rgba(221, 220, 219, 1) 0%, rgba(209, 208, 206, 1) 100%);
+  background: rgba(209, 208, 206, 1);
   -webkit-clip-path: polygon(50% 0%, 66% 27%, 98% 35%, 76% 57%, 79% 91%, 50% 78%, 21% 91%, 24% 57%, 2% 35%, 32% 27%);
   clip-path: polygon(50% 0%, 66% 27%, 98% 35%, 76% 57%, 79% 91%, 50% 78%, 21% 91%, 24% 57%, 2% 35%, 32% 27%);
 }
+.star:after {
+  background: linear-gradient(to bottom, rgba(221, 220, 219, 1) 0%, rgba(209, 208, 206, 1) 100%);
+}
 .star:before {
-  background: #E9D100 !important;
+  background: #E9D100;
+  /* background: linear-gradient(to right, #E9D100 15%, transparent 19%);  */
 }
 .star__one::before {
-  background: linear-gradient(to right, #E9D100 15%, transparent 19%) !important; 
+  background: linear-gradient(to right, #E9D100 20%, rgba(209, 208, 206, 1) 10% ); 
 }
 .star__two:before {
-  background: linear-gradient(to right, #E9D100 15%, transparent 29%) !important; 
+  background: linear-gradient(to right, #E9D100 30%, rgb(209, 208, 206, 1) 5%); 
 }
 .star__three:before {
-  background: linear-gradient(to right, #E9D100 20%, transparent 39%) !important; 
+  background: linear-gradient(to right, #E9D100 40%, rgb(209, 208, 206, 1) 5%); 
 }
 .star__fourth:before {
-  background: linear-gradient(to right, #E9D100 50%, transparent 49%) !important; 
+  background: linear-gradient(to right, #E9D100 45%, rgb(209, 208, 206, 1) 5%); 
 }
-.star__fifth:before {
-  background: linear-gradient(to right, #E9D100 30%, transparent 59%) !important; 
+ .star__fifth:before {
+  background: linear-gradient(to right, #E9D100 50%, rgb(209, 208, 206, 1) 5%); 
 }
 .star__sixth:before {
-  background: linear-gradient(to right, #E9D100 15%, transparent 69%) !important;
+  background: linear-gradient(to right, #E9D100 60%, rgb(209, 208, 206, 1) 5%);
 }
 .star__seventh:before {
-  background: linear-gradient(to right, #E9D100 15%, transparent 79%) !important;
+  background: linear-gradient(to right, #E9D100 70%, rgb(209, 208, 206, 1) 5%);
 }
 .star__eighth:before {
-  background: linear-gradient(to right, #E9D100 15%, transparent 89%) !important;
+  background: linear-gradient(to right, #E9D100 80%, rgb(209, 208, 206, 1) 5%);
 }
 .star__ninth:before {
-  background: linear-gradient(to right, #E9D100 50%, transparent 99%) !important;
-}
+  background: linear-gradient(to right, #E9D100 90%, rgb(209, 208, 206, 1) 5%);
+} /**/
 .rating__circle {
-  border: 2px solid #E9D100;
   width: 30px;
   height: 30px;
   border-radius: 50%;
@@ -75,10 +78,24 @@
   right: 10px;
 }
 .rating__value {
+  display: flex;
+  justify-content: center;
   margin-top: 7px;
-  margin-left: 7px;
   font-size: 12px;
 }
+.third_raiting {
+  border: 2px solid #E90000;
+}
+.five_raiting {
+  border: 2px solid #E97E00;
+}
+.seven_raiting {
+  border: 2px solid #E9D100;
+}
+.above_five_raiting{
+  border: 2px solid #66E900;
+}
+
 @media (max-width: 769px) {
   .container {
     width: 100%;
@@ -108,6 +125,7 @@
     margin-left: 80px;
     margin-top: 10px;
     margin-top: 7px;
+    flex-wrap: wrap;
   }
   .container__description {
     margin-top: 40px;
@@ -161,6 +179,7 @@
   }
   .container__genres {
     display: flex;
+    flex-wrap: wrap;
     margin-top: 7px;
   }
   .rating__items {

@@ -12,14 +12,21 @@
   background: #1677ff !important;
 }
 .ant-pagination {
-  padding-left: 20%;
+  padding-left: 30%;
   padding-right: 20%;
   margin: auto;
+  width: 100%;
+}
+:where(.css-dev-only-do-not-override-3rel02).ant-spin-spinning {
+  width: 100%;
+  display: block !important;
+
 }
 @media (max-width: 769px) {
   .films-list {
     flex-direction: column;
     width: 100%;
+    /* display: block; */
     padding: 10px 20px;
   }
   .ant-pagination {
@@ -51,4 +58,7 @@
 }
 .tabs {
   margin: auto;
+  display: block;
+  padding-left: 35%;
+  padding-right: 35%;
 }

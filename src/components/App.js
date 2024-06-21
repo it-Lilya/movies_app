@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { Alert, Tabs, Input } from 'antd';
+import { Alert, Tabs, Input, Spin } from 'antd';
 import { Online, Offline } from 'react-detect-offline';
 
 import './App.css';
+import { apikey, apiToken } from '../api';
+
 import MoviesList from './MoviesList/MoviesList';
+import { GenresProvider } from './genre-list';
 
 export default function App() {
   const [movieList, setMovieList] = useState([]);
@@ -13,10 +16,25 @@ export default function App() {
   const [error, setError] = useState(null);
   const [copyData, setCopyData] = useState();
   const [currentLength, setCurrentLength] = useState(true);
+  const [guestId, setGuestId] = useState();
+  const [activeTabs, setActiveTabs] = useState('1');
+  const [errorCopy, setErrorCopy] = useState(false);
   const debounce = require('lodash.debounce');
-  const apiKey = '60dc1693c2a318aa9e16ce752d4ea508';
+  const [input, setInput] = useState(
+    <Input className="input__search" placeholder="Type to search..." onChange={debounce(searchChange, [2000])} />
+  );
+  useEffect(() => {
+    fetch('https://api.themoviedb.org/3/authentication/guest_session/new', {
+      headers: {
+        accept: 'application/json',
+        Authorization: `Bearer ${apiToken}`,
+      },
+    })
+      .then((r) => r.json())
+      .then((d) => setGuestId(d.guest_session_id));
+  }, []);
   function getMovies() {
-    fetch(`https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}`)
+    fetch(`https://api.themoviedb.org/3/discover/movie?api_key=${apikey}`)
       .then((response) => {
         if (response.ok) {
           setLoad(false);
@@ -49,17 +67,15 @@ export default function App() {
     window.scrollTo(0, 0);
     setPage(e);
     if (document.querySelector('.ant-input').value.trim().length === 0) {
-      fetch(`https://api.themoviedb.org/3/movie/popular?api_key=${apiKey}&page=${e}`)
+      fetch(`https://api.themoviedb.org/3/movie/popular?api_key=${apikey}&page=${e}`)
         .then((response) => response.json())
-        .then((data) => {
-          setData(data.results);
-        });
+        .then((body) => setData(body.results));
     } else {
       fetch(
-        `https://api.themoviedb.org/3/search/movie?query=${document.querySelector('.ant-input').value}&api_key=${apiKey}&page=${e}`
+        `https://api.themoviedb.org/3/search/movie?query=${document.querySelector('.ant-input').value}&api_key=${apikey}&page=${e}`
       )
         .then((response) => response.json())
-        .then((json) => setData(json.results));
+        .then((body) => setData(body.results));
     }
   }
   const item = [
@@ -76,7 +92,7 @@ export default function App() {
     setLoad(true);
     if (document.querySelector('.ant-input').value.trim().length !== 0) {
       fetch(
-        `https://api.themoviedb.org/3/search/movie?query=${document.querySelector('.ant-input').value}&api_key=${apiKey}&page=${page}`
+        `https://api.themoviedb.org/3/search/movie?query=${document.querySelector('.ant-input').value}&api_key=${apikey}&page=${page}`
       )
         .then((response) => {
           if (response.ok) {
@@ -88,17 +104,51 @@ export default function App() {
           if (json.results.length === 0) {
             setLoad(false);
             setCurrentLength(true);
+            setData([]);
+            setMovieList([]);
+            setErrorCopy(false);
           } else {
             setCurrentLength(false);
             setLoad(false);
+            setData(json.results);
+            setMovieList(json.results);
           }
-          setData(json.results);
-          setMovieList(json.results);
+          if (!json.results.length) {
+            setErrorCopy(true);
+          }
+        });
+    } else {
+      setLoad(false);
+      setCurrentLength(false);
+      getMovies();
+    }
+  }
+  function activeTabsChange(key) {
+    setActiveTabs(key.toString());
+    if (key === '2') {
+      setLoad(true);
+      fetch(`https://api.themoviedb.org/3/guest_session/${guestId}/rated/movies?api_key=${apikey}`, {
+        method: 'GET',
+        headers: {
+          accept: 'application/json',
+          Authorization: `Bearer ${apiToken}`,
+        },
+      })
+        .then((res) => {
+          return res.json();
+        })
+        .then((body) => {
+          setLoad(false);
+          setMovieList(body.results);
+          setData(body.results);
         });
     } else {
       setLoad(false);
       setData(copyData);
-      setCurrentLength(false);
+      setMovieList(copyData);
+      setInput(
+        <Input className="input__search" placeholder="Type to search..." onChange={debounce(searchChange, [2000])} />
+      );
     }
   }
   return (
@@ -109,20 +159,35 @@ export default function App() {
             <Alert description={error} banner={true} showIcon={true} type="error" />
           ) : (
             <>
-              <Tabs className="tabs" defaultActiveKey="1" items={item}></Tabs>
-              <Input
-                className="input__search"
-                placeholder="Type to search..."
-                onChange={debounce(searchChange, [2000])}
-              />
+              <Tabs className="tabs" defaultActiveKey={activeTabs} items={item} onChange={activeTabsChange}></Tabs>
+              {input}
               {currentLength ? (
-                <Alert description="Фильмы не найдены." banner={true} showIcon={false} type="info" />
+                errorCopy ? (
+                  <Alert description="Фильмы не найдены." banner={true} showIcon={false} type="info" />
+                ) : (
+                  <Spin />
+                )
               ) : (
-                <MoviesList data={data} movieList={movieList} page={page} pages={pages} load={load} />
+                <GenresProvider>
+                  <MoviesList
+                    data={data}
+                    movieList={movieList}
+                    page={page}
+                    pages={pages}
+                    load={load}
+                    guestId={guestId}
+                    activeTabs={activeTabs}
+                  />
+                </GenresProvider>
               )}
             </>
           )}
         </div>
+        {/* <ul>
+          {genres.map((genre) => (
+            <li key={genre.id}>{genre.name}</li>
+          ))}
+        </ul> */}
       </Online>
       <Offline>
         <Alert type="error" message="Отсутствует подключение к сети интернет." />
