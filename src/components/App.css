@@ -42,7 +42,7 @@
   
  :where(.css-dev-only-do-not-override-3rel02).ant-pagination 
  .ant-pagination-item-active a {
-  color: white;
+  color: white !important;
  }
 }
 :where(.css-dev-only-do-not-override-46krfd) 
