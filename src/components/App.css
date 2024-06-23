@@ -55,9 +55,9 @@
 .input__search {
   margin-bottom: 20px;
 }
-:where(.css-dev-only-do-not-override-3rel02).ant-alert-info {
-  width: 100%;
-  text-align: center;
+:where(.css-3rel02).ant-alert-info, :where(.css-dev-only-do-not-override-3rel02).ant-alert-info  {
+  width: 100% !important;
+  text-align: center !important;
 }
 .tabs {
   margin: auto;
