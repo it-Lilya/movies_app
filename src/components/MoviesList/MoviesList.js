@@ -5,21 +5,12 @@ import MediaQuery from 'react-responsive';
 import CardFilm from '../CardFilm/CardFilm';
 import { GenresContext } from '../genre-list';
 
-export default function MoviesList({ data, movieList = [], page, pages, load, guestId, activeTabs }) {
-  const [a, setA] = useState(true);
+export default function MoviesList({ data, movieList = [], page, pages, load, setRating }) {
   const genres = useContext(GenresContext);
   const [currentGenres, setCurrentGenres] = useState([]);
   useEffect(() => {
     setCurrentGenres(genres);
   });
-  useEffect(() => {
-    if (activeTabs === '1') {
-      setA(true);
-    }
-    if (activeTabs === '2') {
-      setA(false);
-    }
-  }, [activeTabs]);
   return (
     <>
       <MediaQuery minWidth={769}>
@@ -28,10 +19,12 @@ export default function MoviesList({ data, movieList = [], page, pages, load, gu
         ) : (
           currentGenres.length > 0 &&
           data.map((e) => {
-            return <CardFilm e={e} key={e.id} guestId={guestId} page={page} a={a} currentGenres={currentGenres} />;
+            return <CardFilm e={e} key={e.id} currentGenres={currentGenres} setRating={setRating} />;
           })
         )}
-        <Pagination dataSource={data} total={50} defaultCurrent={1} current={page} onChange={(e) => pages(e)} />
+        {data.length >= 20 && (
+          <Pagination dataSource={data} total={40} defaultCurrent={1} current={page} onChange={(e) => pages(e)} />
+        )}
       </MediaQuery>
       <MediaQuery maxWidth={768}>
         {load ? (
@@ -39,7 +32,7 @@ export default function MoviesList({ data, movieList = [], page, pages, load, gu
         ) : (
           currentGenres.length > 0 &&
           movieList.map((e) => {
-            return <CardFilm e={e} key={e.id} guestId={guestId} page={page} a={a} currentGenres={currentGenres} />;
+            return <CardFilm e={e} key={e.id} currentGenres={currentGenres} setRating={setRating} />;
           })
         )}
       </MediaQuery>

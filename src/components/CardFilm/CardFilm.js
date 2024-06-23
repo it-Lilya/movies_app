@@ -5,9 +5,9 @@ import { format } from 'date-fns';
 
 import Rate from './Rate/Rate';
 
-export default function Card({ e, guestId, apiKey, currentGenres }) {
+export default function Card({ e, currentGenres, setRating }) {
   const [classes, setClasses] = useState('');
-  const [r, sR] = useState(e.vote_average);
+  const [cardRating, setCardRating] = useState(false);
   const genresArr = e.genre_ids;
   let array = [];
   genresArr.forEach((t) => {
@@ -15,11 +15,11 @@ export default function Card({ e, guestId, apiKey, currentGenres }) {
   });
   useEffect(() => {
     if (e.rating) {
-      sR(e.rating);
+      setCardRating(true);
+      stars(e.rating);
     } else {
-      sR(e.vote_average.toFixed(1));
+      stars(e.vote_average);
     }
-    stars(r);
   }, []);
   let arr = [];
   function stars(r) {
@@ -27,7 +27,7 @@ export default function Card({ e, guestId, apiKey, currentGenres }) {
     container.querySelectorAll('.rating__item').forEach((el) => {
       el.classList.remove('star');
     });
-    container.querySelector(`.item__${Math.floor(r).toFixed()}`).classList.add('star');
+    container.querySelector(`.item__${r.toFixed()}`).classList.add('star');
     for (let i = 1; i <= Math.floor(r); i++) {
       arr.push(i);
       container.querySelector(`.item__${i}`).classList.add('star');
@@ -90,9 +90,9 @@ export default function Card({ e, guestId, apiKey, currentGenres }) {
           })}
         </div>
         <p className="container__description">{descriptionAbbreviation()}</p>
-        <Rate guestId={guestId} apiKey={apiKey} />
+        <Rate setRating={setRating} />
         <div className={`rating__circle ${classes}`}>
-          <p className="rating__value">{r}</p>
+          <p className="rating__value">{cardRating ? e.rating : e.vote_average.toFixed(1)}</p>
         </div>
       </div>
     </div>

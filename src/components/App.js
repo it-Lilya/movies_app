@@ -23,6 +23,7 @@ export default function App() {
   const [input, setInput] = useState(
     <Input className="input__search" placeholder="Type to search..." onChange={debounce(searchChange, [2000])} />
   );
+  const [ratedData, setRatedData] = useState(false);
   useEffect(() => {
     fetch('https://api.themoviedb.org/3/authentication/guest_session/new', {
       headers: {
@@ -126,22 +127,30 @@ export default function App() {
   function activeTabsChange(key) {
     setActiveTabs(key.toString());
     if (key === '2') {
+      setInput(null);
       setLoad(true);
-      fetch(`https://api.themoviedb.org/3/guest_session/${guestId}/rated/movies?api_key=${apikey}`, {
-        method: 'GET',
-        headers: {
-          accept: 'application/json',
-          Authorization: `Bearer ${apiToken}`,
-        },
-      })
-        .then((res) => {
-          return res.json();
+      if (ratedData) {
+        fetch(`https://api.themoviedb.org/3/guest_session/${guestId}/rated/movies?api_key=${apikey}`, {
+          method: 'GET',
+          headers: {
+            accept: 'application/json',
+            Authorization: `Bearer ${apiToken}`,
+          },
         })
-        .then((body) => {
-          setLoad(false);
-          setMovieList(body.results);
-          setData(body.results);
-        });
+          .then((res) => res.json())
+          .then((body) => {
+            if (body) {
+              setLoad(false);
+              setMovieList(body.results);
+              setData(body.results);
+            }
+          });
+      } else {
+        setLoad(false);
+        setInput(<Alert description="Список оцененных фильмов пуст." banner={true} showIcon={false} type="info" />);
+        setMovieList([]);
+        setData([]);
+      }
     } else {
       setLoad(false);
       setData(copyData);
@@ -150,6 +159,26 @@ export default function App() {
         <Input className="input__search" placeholder="Type to search..." onChange={debounce(searchChange, [2000])} />
       );
     }
+    document
+      .querySelectorAll('.ant-pagination-item')
+      .forEach((el) => el.classList.remove('ant-pagination-item-active'));
+    setPage(1);
+  }
+  async function setRating(e) {
+    const raiting = parseInt(e.target.className.match(/\d+/));
+    const movieId = e.target.closest('.container').id;
+    await fetch(`https://api.themoviedb.org/3/movie/${movieId}/rating?guest_session_id=${guestId}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json;charset=utf-8',
+        Authorization: `Bearer ${apiToken}`,
+      },
+      body: JSON.stringify({
+        value: raiting,
+      }),
+    })
+      .then((re) => re.json())
+      .then(() => setRatedData(true));
   }
   return (
     <div className="main">
@@ -175,19 +204,13 @@ export default function App() {
                     page={page}
                     pages={pages}
                     load={load}
-                    guestId={guestId}
-                    activeTabs={activeTabs}
+                    setRating={setRating}
                   />
                 </GenresProvider>
               )}
             </>
           )}
         </div>
-        {/* <ul>
-          {genres.map((genre) => (
-            <li key={genre.id}>{genre.name}</li>
-          ))}
-        </ul> */}
       </Online>
       <Offline>
         <Alert type="error" message="Отсутствует подключение к сети интернет." />
