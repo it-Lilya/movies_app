@@ -63,11 +63,11 @@
   background: linear-gradient(to right, #E9D100 70%, rgb(209, 208, 206, 1) 5%);
 }
 .star__eighth:before {
-  background: linear-gradient(to right, #E9D100 80%, rgb(209, 208, 206, 1) 5%);
+  background: linear-gradient(to right, #E9D100 80%, rgb(209, 208, 206, 1) 1%);
 }
 .star__ninth:before {
   background: linear-gradient(to right, #E9D100 90%, rgb(209, 208, 206, 1) 5%);
-} /**/
+}
 .rating__circle {
   width: 30px;
   height: 30px;

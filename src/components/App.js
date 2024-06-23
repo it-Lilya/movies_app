@@ -90,7 +90,6 @@ export default function App() {
     },
   ];
   function searchChange() {
-    setLoad(true);
     if (document.querySelector('.ant-input').value.trim().length !== 0) {
       fetch(
         `https://api.themoviedb.org/3/search/movie?query=${document.querySelector('.ant-input').value}&api_key=${apikey}&page=${page}`

@@ -21,43 +21,43 @@ export default function Card({ e, currentGenres, setRating }) {
       stars(e.vote_average);
     }
   }, []);
-  let arr = [];
   function stars(r) {
-    const container = document.getElementById(`${e.id}`);
-    container.querySelectorAll('.rating__item').forEach((el) => {
-      el.classList.remove('star');
-    });
-    container.querySelector(`.item__${r.toFixed()}`).classList.add('star');
-    for (let i = 1; i <= Math.floor(r); i++) {
-      arr.push(i);
-      container.querySelector(`.item__${i}`).classList.add('star');
-      if (r - arr[arr.length - 1] < 1 && r - arr[arr.length - 1] !== 0) {
-        let currentItem = container.querySelector(`.item__${i + 1}`);
-        if (r >= 0 && (r % 1).toFixed(1) < 0.2) {
-          currentItem.classList.add('star__one');
-        } else if ((r % 1).toFixed(1) >= 0.2 && (r % 1).toFixed(1) < 0.3) {
-          currentItem.classList.add('star__two');
-        } else if ((r % 1).toFixed(1) >= 0.3 && (r % 1).toFixed(1) < 0.4) {
-          currentItem.classList.add('star__three');
-        } else if ((r % 1).toFixed(1) >= 0.4 && (r % 1).toFixed(1) < 0.5) {
-          currentItem.classList.add('star__fourth');
-        } else if ((r % 1).toFixed(1) >= 0.5 && (r % 1).toFixed(1) < 0.6) {
-          currentItem.classList.add('star__fifth');
-        } else if ((r % 1).toFixed(1) >= 0.6 && (r % 1).toFixed(1) < 0.7) {
-          currentItem.classList.add('star__sixth');
-        } else if ((r % 1).toFixed(1) >= 0.7 && (r % 1).toFixed(1) < 0.8) {
-          currentItem.classList.add('star__seventh');
-        } else if ((r % 1).toFixed(1) >= 0.8 && (r % 1).toFixed(1) < 1) {
-          currentItem.classList.add('star__eighth');
-        } else if ((r % 1).toFixed(1) >= 1) {
-          currentItem.classList.add('star__one');
-        }
+    let arr = [];
+    if (r !== 0) {
+      const container = document.getElementById(`${e.id}`);
+      container.querySelectorAll('.rating__item').forEach((el) => {
+        el.classList.remove('star');
+      });
+      container.querySelector(`.item__${Math.floor(r)}`).classList.add('star');
+      for (let i = 0; i < Math.floor(r); i++) {
+        arr.push(i + 1);
       }
-      if (Math.floor(r).toFixed() > 0 && Math.floor(r).toFixed() < 3) {
+      arr.forEach((el) => container.querySelector(`.item__${el}`).classList.add('star'));
+      let currentItem = container.querySelector(`.item__${arr[arr.length - 1] + 1}`);
+      if (r % 1 > 0 && r % 1 < 0.2) {
+        currentItem.classList.add('star__one');
+      } else if (r % 1 >= 0.2 && r % 1 < 0.3) {
+        currentItem.classList.add('star__two');
+      } else if (r % 1 >= 0.3 && r % 1 < 0.4) {
+        currentItem.classList.add('star__three');
+      } else if (r % 1 >= 0.4 && r % 1 < 0.5) {
+        currentItem.classList.add('star__fourth');
+      } else if (r % 1 >= 0.5 && r % 1 < 0.6) {
+        currentItem.classList.add('star__fifth');
+      } else if (r % 1 >= 0.6 && r % 1 < 0.7) {
+        currentItem.classList.add('star__sixth');
+      } else if (r % 1 >= 0.7 && r % 1 < 0.8) {
+        currentItem.classList.add('star__seventh');
+      } else if (r % 1 >= 0.8 && r % 1 < 1) {
+        currentItem.classList.add('star__eighth');
+      } else if (r % 1 >= 1) {
+        currentItem.classList.add('star__one');
+      }
+      if (Math.floor(r) > 0 && Math.floor(r) < 3) {
         setClasses('third_raiting');
-      } else if (Math.floor(r).toFixed() >= 3 && Math.floor(r).toFixed() < 5) {
+      } else if (Math.floor(r) >= 3 && Math.floor(r) < 5) {
         setClasses('five_raiting');
-      } else if (Math.floor(r).toFixed() >= 5 && Math.floor(r).toFixed() < 7) {
+      } else if (Math.floor(r) >= 5 && Math.floor(r) < 7) {
         setClasses('seven_raiting');
       } else {
         setClasses('above_five_raiting');
