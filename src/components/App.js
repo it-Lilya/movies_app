@@ -24,6 +24,7 @@ export default function App() {
     <Input className="input__search" placeholder="Type to search..." onChange={debounce(searchChange, [2000])} />
   );
   const [ratedData, setRatedData] = useState(false);
+  const [searchData, setSearchData] = useState();
   useEffect(() => {
     fetch('https://api.themoviedb.org/3/authentication/guest_session/new', {
       headers: {
@@ -107,22 +108,26 @@ export default function App() {
             setData([]);
             setMovieList([]);
             setErrorCopy(false);
+            localStorage.removeItem('search');
+            setSearchData();
           } else {
             setCurrentLength(false);
             setLoad(false);
             setData(json.results);
             setMovieList(json.results);
+            setSearchData(json.results);
+            localStorage.setItem('search', JSON.stringify(document.querySelector('.ant-input').value.trim()));
           }
           if (!json.results.length) {
             setErrorCopy(true);
           }
         });
-      localStorage.setItem('search', JSON.stringify(document.querySelector('.ant-input').value.trim()));
     } else {
       setLoad(false);
       setCurrentLength(false);
       getMovies();
       localStorage.removeItem('search');
+      setSearchData();
     }
   }
   function activeTabsChange(key) {
@@ -153,12 +158,24 @@ export default function App() {
         setData([]);
       }
     } else {
-      setLoad(false);
-      setData(copyData);
-      setMovieList(copyData);
+      if (searchData) {
+        setLoad(false);
+        setData(searchData);
+        setMovieList(searchData);
+      } else {
+        setLoad(false);
+        setData(copyData);
+        setMovieList(copyData);
+      }
       setInput(
-        <Input className="input__search" placeholder="Type to search..." onChange={debounce(searchChange, [2000])} />
+        <Input
+          className="input__search"
+          placeholder="Type to search..."
+          onChange={debounce(searchChange, [2000])}
+          defaultValue={JSON.parse(localStorage.getItem('search'))}
+        />
       );
+      localStorage.removeItem('search');
     }
     document
       .querySelectorAll('.ant-pagination-item')
