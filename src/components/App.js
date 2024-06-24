@@ -98,33 +98,34 @@ export default function App() {
     },
   ];
   function searchChange() {
+    setLoad(true);
+    setCurrentLength(false);
     if (document.querySelector('.ant-input').value.trim().length !== 0) {
       fetch(
         `https://api.themoviedb.org/3/search/movie?query=${document.querySelector('.ant-input').value}&api_key=${apikey}&page=${page}`
       )
         .then((response) => {
           if (response.ok) {
-            setLoad(false);
             return response.json();
           }
         })
         .then((json) => {
           if (json.results.length === 0) {
-            setLoad(false);
-            setCurrentLength(true);
             setData([]);
             setMovieList([]);
             setErrorCopy(false);
             localStorage.removeItem('search');
             setSearchData();
             setDescriptionErr('Фильмы не найдены.');
-          } else {
-            setCurrentLength(false);
             setLoad(false);
+            setCurrentLength(true);
+          } else {
             setData(json.results);
             setMovieList(json.results);
             setSearchData(json.results);
             localStorage.setItem('search', JSON.stringify(document.querySelector('.ant-input').value.trim()));
+            setLoad(false);
+            setCurrentLength(false);
           }
           if (!json.results.length) {
             setErrorCopy(true);
@@ -182,7 +183,7 @@ export default function App() {
         <Input
           className="input__search"
           placeholder="Type to search..."
-          onChange={debounce(searchChange, [2000])}
+          onChange={debounce(searchChange, [1500])}
           defaultValue={JSON.parse(localStorage.getItem('search'))}
         />
       );
