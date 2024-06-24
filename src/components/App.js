@@ -21,11 +21,18 @@ export default function App() {
   const [errorCopy, setErrorCopy] = useState(false);
   const debounce = require('lodash.debounce');
   const [input, setInput] = useState(
-    <Input className="input__search" placeholder="Type to search..." onChange={debounce(searchChange, [2000])} />
+    <Input
+      className="input__search"
+      placeholder="Type to search..."
+      onChange={debounce(searchChange, [2000])}
+      defaultValue={JSON.parse(localStorage.getItem('search'))}
+    />
   );
   const [ratedData, setRatedData] = useState(false);
   const [searchData, setSearchData] = useState();
+  const [descriptionErr, setDescriptionErr] = useState('Список оцененных фильмов пуст.');
   useEffect(() => {
+    localStorage.removeItem('search');
     fetch('https://api.themoviedb.org/3/authentication/guest_session/new', {
       headers: {
         accept: 'application/json',
@@ -110,6 +117,7 @@ export default function App() {
             setErrorCopy(false);
             localStorage.removeItem('search');
             setSearchData();
+            setDescriptionErr('Фильмы не найдены.');
           } else {
             setCurrentLength(false);
             setLoad(false);
@@ -126,8 +134,8 @@ export default function App() {
       setLoad(false);
       setCurrentLength(false);
       getMovies();
-      localStorage.removeItem('search');
       setSearchData();
+      localStorage.removeItem('search');
     }
   }
   function activeTabsChange(key) {
@@ -152,12 +160,15 @@ export default function App() {
             }
           });
       } else {
+        setCurrentLength(true);
         setLoad(false);
-        setInput(<Alert description="Список оцененных фильмов пуст." banner={true} showIcon={false} type="info" />);
+        setErrorCopy(true);
+        setDescriptionErr('Список оцененных фильмов пуст.');
         setMovieList([]);
         setData([]);
       }
     } else {
+      setCurrentLength(false);
       if (searchData) {
         setLoad(false);
         setData(searchData);
@@ -175,7 +186,6 @@ export default function App() {
           defaultValue={JSON.parse(localStorage.getItem('search'))}
         />
       );
-      localStorage.removeItem('search');
     }
     document
       .querySelectorAll('.ant-pagination-item')
@@ -210,7 +220,7 @@ export default function App() {
               {input}
               {currentLength ? (
                 errorCopy ? (
-                  <Alert description="Фильмы не найдены." banner={true} showIcon={false} type="info" />
+                  <Alert description={descriptionErr} banner={true} showIcon={false} type="info" />
                 ) : (
                   <Spin />
                 )
