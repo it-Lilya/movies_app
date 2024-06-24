@@ -18,9 +18,10 @@ export default function Card({ e, currentGenres, setRating }) {
       setCardRating(true);
       stars(e.rating);
     } else {
+      setCardRating(false);
       stars(e.vote_average);
     }
-  }, []);
+  });
   function stars(r) {
     let arr = [];
     if (r !== 0) {

@@ -117,10 +117,12 @@ export default function App() {
             setErrorCopy(true);
           }
         });
+      localStorage.setItem('search', JSON.stringify(document.querySelector('.ant-input').value.trim()));
     } else {
       setLoad(false);
       setCurrentLength(false);
       getMovies();
+      localStorage.removeItem('search');
     }
   }
   function activeTabsChange(key) {
