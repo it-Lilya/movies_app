@@ -73,6 +73,9 @@
 :where(.css-dev-only-do-not-override-3rel02).ant-rate .ant-rate-star:not(:last-child) {
   margin-inline-end: 2px !important;
 }
+:where(.css-3rel02).ant-rate .ant-rate-star:not(:last-child) {
+  margin-inline-end: 2px !important;
+}
 :where(.css-dev-only-do-not-override-3rel02).ant-rate {
   font-size: 16px !important;
   display: flex !important;
