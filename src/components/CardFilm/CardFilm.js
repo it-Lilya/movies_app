@@ -4,8 +4,6 @@ import { Button } from 'antd';
 import { format } from 'date-fns';
 import { Rate } from 'antd';
 
-// import Rated from './Rate/Rate';
-
 export default function Card({ e, currentGenres, setRating }) {
   const [classes, setClasses] = useState('');
   const [cardRating, setCardRating] = useState(e.vote_average.toFixed(1));
@@ -16,23 +14,28 @@ export default function Card({ e, currentGenres, setRating }) {
     array.push(currentGenres.find((el) => el.id === t));
   });
   useEffect(() => {
+    console.log(e);
     if (e.rating) {
       setCardRating(e.rating);
       setValue(e.rating);
+      circleRating(e.rating);
     } else {
       setCardRating(e.vote_average.toFixed(1));
       setValue(e.vote_average.toFixed(1));
+      circleRating(Math.floor(e.vote_average));
     }
-    if (Math.floor(cardRating) > 0 && Math.floor(cardRating) < 3) {
+  }, []);
+  function circleRating(val) {
+    if (val > 0 && val < 3) {
       setClasses('third_raiting');
-    } else if (Math.floor(cardRating) >= 3 && Math.floor(cardRating) < 5) {
+    } else if (val >= 3 && val < 5) {
       setClasses('five_raiting');
-    } else if (Math.floor(cardRating) >= 5 && Math.floor(cardRating) < 7) {
+    } else if (val >= 5 && val < 7) {
       setClasses('seven_raiting');
     } else {
       setClasses('above_five_raiting');
     }
-  }, []);
+  }
   function descriptionAbbreviation() {
     let arrString = e.overview.split(' ');
     arrString.length = 29;
@@ -59,10 +62,10 @@ export default function Card({ e, currentGenres, setRating }) {
           })}
         </div>
         <p className="container__description">{descriptionAbbreviation()}</p>
-        {/* <Rated setRating={setRating} e={e} /> */}
         <div className="rating__items">
           <Rate
             onChange={(val) => {
+              circleRating(val);
               setCardRating(val);
               setValue(val);
               setRating(val, e);

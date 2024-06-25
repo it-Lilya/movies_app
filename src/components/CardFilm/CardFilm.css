@@ -68,15 +68,18 @@
   background: linear-gradient(to right, #E9D100 90%, rgb(209, 208, 206, 1) 5%);
 } */
 :where(.css-dev-only-do-not-override-3rel02).ant-flex-gap-middle {
-  gap: 8px !important;
+  gap: 6px !important;
 }
 :where(.css-dev-only-do-not-override-3rel02).ant-rate .ant-rate-star:not(:last-child) {
-  margin-inline-end: 6px !important;
+  margin-inline-end: 2px !important;
 }
 :where(.css-dev-only-do-not-override-3rel02).ant-rate {
-  font-size: 13px !important;
+  font-size: 16px !important;
   display: flex !important;
   justify-content: space-between;
+}
+:where(.css-3rel02).ant-rate {
+  display: flex !important;
 }
 .rating__circle {
   width: 30px;
