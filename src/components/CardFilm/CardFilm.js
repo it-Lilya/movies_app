@@ -2,12 +2,14 @@ import React, { useEffect, useState } from 'react';
 import './CardFilm.css';
 import { Button } from 'antd';
 import { format } from 'date-fns';
+import { Rate } from 'antd';
 
-import Rate from './Rate/Rate';
+// import Rated from './Rate/Rate';
 
 export default function Card({ e, currentGenres, setRating }) {
   const [classes, setClasses] = useState('');
-  const [cardRating, setCardRating] = useState(false);
+  const [cardRating, setCardRating] = useState(e.vote_average.toFixed(1));
+  const [value, setValue] = useState(cardRating);
   const genresArr = e.genre_ids;
   let array = [];
   genresArr.forEach((t) => {
@@ -15,56 +17,22 @@ export default function Card({ e, currentGenres, setRating }) {
   });
   useEffect(() => {
     if (e.rating) {
-      setCardRating(true);
-      stars(e.rating);
+      setCardRating(e.rating);
+      setValue(e.rating);
     } else {
-      setCardRating(false);
-      stars(e.vote_average);
+      setCardRating(e.vote_average.toFixed(1));
+      setValue(e.vote_average.toFixed(1));
     }
-  });
-  function stars(r) {
-    let arr = [];
-    if (r !== 0) {
-      const container = document.getElementById(`${e.id}`);
-      container.querySelectorAll('.rating__item').forEach((el) => {
-        el.classList.remove('star');
-      });
-      container.querySelector(`.item__${Math.floor(r)}`).classList.add('star');
-      for (let i = 0; i < Math.floor(r); i++) {
-        arr.push(i + 1);
-      }
-      arr.forEach((el) => container.querySelector(`.item__${el}`).classList.add('star'));
-      let currentItem = container.querySelector(`.item__${arr[arr.length - 1] + 1}`);
-      if (r % 1 > 0 && r % 1 < 0.2) {
-        currentItem.classList.add('star__one');
-      } else if (r % 1 >= 0.2 && r % 1 < 0.3) {
-        currentItem.classList.add('star__two');
-      } else if (r % 1 >= 0.3 && r % 1 < 0.4) {
-        currentItem.classList.add('star__three');
-      } else if (r % 1 >= 0.4 && r % 1 < 0.5) {
-        currentItem.classList.add('star__fourth');
-      } else if (r % 1 >= 0.5 && r % 1 < 0.6) {
-        currentItem.classList.add('star__fifth');
-      } else if (r % 1 >= 0.6 && r % 1 < 0.7) {
-        currentItem.classList.add('star__sixth');
-      } else if (r % 1 >= 0.7 && r % 1 < 0.8) {
-        currentItem.classList.add('star__seventh');
-      } else if (r % 1 >= 0.8 && r % 1 < 1) {
-        currentItem.classList.add('star__eighth');
-      } else if (r % 1 >= 1) {
-        currentItem.classList.add('star__one');
-      }
-      if (Math.floor(r) > 0 && Math.floor(r) < 3) {
-        setClasses('third_raiting');
-      } else if (Math.floor(r) >= 3 && Math.floor(r) < 5) {
-        setClasses('five_raiting');
-      } else if (Math.floor(r) >= 5 && Math.floor(r) < 7) {
-        setClasses('seven_raiting');
-      } else {
-        setClasses('above_five_raiting');
-      }
+    if (Math.floor(cardRating) > 0 && Math.floor(cardRating) < 3) {
+      setClasses('third_raiting');
+    } else if (Math.floor(cardRating) >= 3 && Math.floor(cardRating) < 5) {
+      setClasses('five_raiting');
+    } else if (Math.floor(cardRating) >= 5 && Math.floor(cardRating) < 7) {
+      setClasses('seven_raiting');
+    } else {
+      setClasses('above_five_raiting');
     }
-  }
+  }, []);
   function descriptionAbbreviation() {
     let arrString = e.overview.split(' ');
     arrString.length = 29;
@@ -91,9 +59,20 @@ export default function Card({ e, currentGenres, setRating }) {
           })}
         </div>
         <p className="container__description">{descriptionAbbreviation()}</p>
-        <Rate setRating={setRating} />
+        {/* <Rated setRating={setRating} e={e} /> */}
+        <div className="rating__items">
+          <Rate
+            onChange={(val) => {
+              setCardRating(val);
+              setValue(val);
+              setRating(val, e);
+            }}
+            value={value}
+            count={10}
+          />
+        </div>
         <div className={`rating__circle ${classes}`}>
-          <p className="rating__value">{cardRating ? e.rating : e.vote_average.toFixed(1)}</p>
+          <p className="rating__value">{cardRating}</p>
         </div>
       </div>
     </div>

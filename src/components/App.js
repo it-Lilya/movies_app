@@ -193,17 +193,15 @@ export default function App() {
       .forEach((el) => el.classList.remove('ant-pagination-item-active'));
     setPage(1);
   }
-  async function setRating(e) {
-    const raiting = parseInt(e.target.className.match(/\d+/));
-    const movieId = e.target.closest('.container').id;
-    await fetch(`https://api.themoviedb.org/3/movie/${movieId}/rating?guest_session_id=${guestId}`, {
+  async function setRating(rate, element) {
+    await fetch(`https://api.themoviedb.org/3/movie/${element.id}/rating?guest_session_id=${guestId}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json;charset=utf-8',
         Authorization: `Bearer ${apiToken}`,
       },
       body: JSON.stringify({
-        value: raiting,
+        value: rate,
       }),
     })
       .then((re) => re.json())
