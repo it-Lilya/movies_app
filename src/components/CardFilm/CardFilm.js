@@ -14,7 +14,6 @@ export default function Card({ e, currentGenres, setRating }) {
     array.push(currentGenres.find((el) => el.id === t));
   });
   useEffect(() => {
-    console.log(e);
     if (e.rating) {
       setCardRating(e.rating);
       setValue(e.rating);
